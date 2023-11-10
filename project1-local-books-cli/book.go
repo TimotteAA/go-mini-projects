@@ -9,10 +9,10 @@ import (
 
 // 结构体字段必须大写，才能序列化
 type Book struct {
-	Id       int64 `json:"id,string"`
+	Id       string `json:"id"`
 	Title    string `json:"title"`
 	Author   string `json:"author"`
-	Price    int64 `json:"price"`
+	Price    string `json:"price"`
 	ImageUrl string `json:"image_url"`
 }
 
@@ -32,6 +32,7 @@ type bookEntity struct {
 func (*bookEntity) init() {
 	books := make([]Book, 0)
 	file, err := os.Open("./books.json")
+	defer file.Close()
 	if err != nil {
 		log.Fatal("读取books.json文件失败", err)
 	}
@@ -39,7 +40,7 @@ func (*bookEntity) init() {
 
 	err = decoder.Decode(&books)
 	if err != nil {
-		// log.Fatal("序列化books数据失败")
+		log.Fatal("序列化books数据失败")
 	}
 	for _, book := range books {
 		fmt.Printf("书本%v", book)
